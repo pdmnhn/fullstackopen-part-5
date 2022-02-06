@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import Togglable from "./components/Togglable";
 import LoginForm from "./components/LoginForm";
 import BlogForm from "./components/BlogForm";
@@ -21,19 +21,20 @@ const App = () => {
     }
   }, []);
 
-  useEffect(() => {
+  const setInfoMessage = (message) => {
+    setInfo(message);
     setTimeout(() => {
       setInfo("");
     }, 5000);
-  }, [info]);
+  };
 
   const createNewBlog = async (title, author, url) => {
     try {
       const newBlog = await blogService.createNewBlog({ title, author, url });
       setBlogs(blogs.concat(newBlog));
-      setInfo(`a new blog ${newBlog.title} added`);
+      setInfoMessage(`a new blog ${newBlog.title} added`);
     } catch (error) {
-      setInfo("title and url are required to create a new blog");
+      setInfoMessage("title and url are required to create a new blog");
     } finally {
       blogFormRef.current.toggleVisibility();
     }
@@ -46,7 +47,7 @@ const App = () => {
       window.localStorage.setItem("user", JSON.stringify(user));
       setUser(user);
     } catch (error) {
-      setInfo("wrong username or password");
+      setInfoMessage("wrong username or password");
     }
   };
 
@@ -69,7 +70,7 @@ const App = () => {
           if (blog.id !== id) {
             return true;
           }
-          setInfo(`${blog.title} by ${blog.author} is removed`);
+          setInfoMessage(`${blog.title} by ${blog.author} is removed`);
           return false;
         })
       );
