@@ -25,7 +25,7 @@ blogsRouter.post("/", async (request, response) => {
     return response.status(401).end();
   }
   const { username, id } = request.user;
-  const { title, url, likes } = request.body;
+  const { title, url, likes, author } = request.body;
   if (!(url && title)) {
     return response
       .status(400)
@@ -33,13 +33,17 @@ blogsRouter.post("/", async (request, response) => {
   }
   const blogObj = {
     title,
-    author: username,
+    author,
     url,
     likes,
     user: id,
   };
   const blog = new Blog(blogObj);
   const result = await blog.save();
+  await result.populate("user", {
+    username: 1,
+    name: 1,
+  });
   let user = await User.findById(id);
   user.blogs = user.blogs.concat(result.id);
   await user.save();
@@ -59,14 +63,29 @@ blogsRouter.delete("/:id", async (request, response) => {
 });
 
 blogsRouter.put("/:id", async (request, response) => {
+  if (!request.user) {
+    return response.status(401).end();
+  }
   const id = request.params.id;
-  const blog = {
+  const blog = await Blog.findById(id);
+  if (!blog) {
+    return response.status(404).end();
+  } else if (!(request.user && request.user.id === blog.user.toString())) {
+    return response.status(401).end();
+  }
+  const toBeUpdatedBlog = {
     title: request.body.title,
     author: request.body.author,
     url: request.body.url,
     likes: request.body.likes,
   };
-  const result = await Blog.findByIdAndUpdate(id, blog, { new: true });
+  const result = await Blog.findByIdAndUpdate(id, toBeUpdatedBlog, {
+    new: true,
+  });
+  await result.populate("user", {
+    username: 1,
+    name: 1,
+  });
   response.status(200).json(result);
 });
 
