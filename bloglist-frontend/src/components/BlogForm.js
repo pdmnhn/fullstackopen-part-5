@@ -25,15 +25,15 @@ const BlogForm = ({ createNewBlog }) => {
       <form onSubmit={submit}>
         <div>
           title:
-          <input value={title} onChange={changeState(setTitle)} />
+          <input id="title" value={title} onChange={changeState(setTitle)} />
         </div>
         <div>
           author:
-          <input value={author} onChange={changeState(setAuthor)} />
+          <input id="author" value={author} onChange={changeState(setAuthor)} />
         </div>
         <div>
           url:
-          <input value={url} onChange={changeState(setUrl)} />
+          <input id="url" value={url} onChange={changeState(setUrl)} />
         </div>
         <button type="submit">create</button>
       </form>

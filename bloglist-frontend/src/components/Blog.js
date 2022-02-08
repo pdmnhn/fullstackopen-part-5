@@ -15,7 +15,7 @@ const Blog = ({ blog, user, incrementLikes, deleteBlog }) => {
   const [visible, setVisibility] = useState(false);
 
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} className="blogComp">
       {blog.title} {blog.author}{" "}
       <button
         onClick={() => {
@@ -25,11 +25,12 @@ const Blog = ({ blog, user, incrementLikes, deleteBlog }) => {
         {visible ? "hide" : "view"}
       </button>
       {visible && (
-        <>
+        <div className="conditionally-rendered">
           <div>{blog.url}</div>
           <div>
             likes {blog.likes}{" "}
             <button
+              className="like-button"
               onClick={() => {
                 incrementLikes(blog.id);
               }}
@@ -47,7 +48,7 @@ const Blog = ({ blog, user, incrementLikes, deleteBlog }) => {
               remove
             </button>
           )}
-        </>
+        </div>
       )}
     </div>
   );
