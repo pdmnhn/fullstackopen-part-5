@@ -21,6 +21,30 @@ const App = () => {
     }
   }, []);
 
+  useEffect(() => {
+    const sorted = [...blogs];
+    let prev,
+      isSorted = true;
+    for (const b of sorted) {
+      if (!prev || b.likes < prev) {
+        prev = b.likes;
+      } else if (b.likes > prev) {
+        isSorted = false;
+        break;
+      }
+    }
+    if (isSorted) return;
+
+    sorted.sort((blog1, blog2) => {
+      if (blog1.likes > blog2.likes) {
+        return -1;
+      }
+      return 1;
+    });
+
+    setBlogs(sorted);
+  }, [blogs]);
+
   const setInfoMessage = (message) => {
     setInfo(message);
     setTimeout(() => {
@@ -87,7 +111,7 @@ const App = () => {
       <h1>Blog list</h1>
       {info && <h3>{info}</h3>}
       {!user && (
-        <Togglable buttonText="log in">
+        <Togglable buttonText="log in" openByDefault={true}>
           <LoginForm handleLogin={handleLogin} />
         </Togglable>
       )}
@@ -97,7 +121,11 @@ const App = () => {
           <p>
             {user.username} logged in <button onClick={logout}>logout</button>
           </p>
-          <Togglable buttonText="create new blog" ref={blogFormRef}>
+          <Togglable
+            buttonText="create new blog"
+            openByDefault={false}
+            ref={blogFormRef}
+          >
             <BlogForm createNewBlog={createNewBlog} />
           </Togglable>
           <br></br>
