@@ -70,14 +70,14 @@ blogsRouter.put("/:id", async (request, response) => {
   const blog = await Blog.findById(id);
   if (!blog) {
     return response.status(404).end();
-  } else if (!(request.user && request.user.id === blog.user.toString())) {
+  } else if (!request.user) {
     return response.status(401).end();
   }
   const toBeUpdatedBlog = {
-    title: request.body.title,
-    author: request.body.author,
-    url: request.body.url,
-    likes: request.body.likes,
+    title: blog.title,
+    author: blog.author,
+    url: blog.url,
+    likes: blog.likes + 1,
   };
   const result = await Blog.findByIdAndUpdate(id, toBeUpdatedBlog, {
     new: true,

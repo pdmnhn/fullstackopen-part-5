@@ -10,7 +10,7 @@ const Blog = ({ blog, user, incrementLikes, deleteBlog }) => {
     marginBottom: 5,
   };
 
-  const canBeRemoved = user.username === blog.user.username;
+  let canBeRemoved = user.username === blog.user.username;
 
   const [visible, setVisibility] = useState(false);
 
@@ -28,7 +28,7 @@ const Blog = ({ blog, user, incrementLikes, deleteBlog }) => {
         <div className="conditionally-rendered">
           <div>{blog.url}</div>
           <div>
-            likes {blog.likes}{" "}
+            likes <span className="likes">{blog.likes}</span>{" "}
             <button
               className="like-button"
               onClick={() => {
