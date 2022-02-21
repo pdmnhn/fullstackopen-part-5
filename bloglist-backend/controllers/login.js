@@ -11,7 +11,7 @@ loginRouter.post("/", async (request, response) => {
   const { passwordHash, id, name } = await User.findOne({ username });
   const success = await bcrypt.compare(password, passwordHash);
   if (!success) {
-    return response.status(401);
+    return response.status(401).end();
   }
   const userForToken = { username, id };
   const token = jwt.sign(userForToken, process.env.SECRET);
